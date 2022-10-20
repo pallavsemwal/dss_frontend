@@ -1,0 +1,24 @@
+.hoverme{
+    cursor: pointer;
+}
+
+.hoverme:hover{
+    -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+.hoverEvent{
+    cursor: pointer;
+    /* z-index: 3; */
+    position: relative;
+}
+
+.hoverEvent:hover{
+    background-color: rgb(139, 179, 253);
+}
+
+
+.button{
+  color: rgb(184, 187, 187);
+}
