@@ -6,6 +6,7 @@ import IndividualSchemeDesign from "./IndividualScheme";
 import LoadingComponent from "../LoadingPage/LoadingComponent";
 import Button from "@bootstrap-styled/v4/lib/Button";
 import SchemeModal from "./Scheme.modal";
+import { Link } from "react-router-dom";
 
 const SchemesGridDiv = styled.div`
   display: flex;
@@ -54,7 +55,9 @@ function SchemesInfo() {
         <SchemesGridDiv>
           {data.allSchemesDistrict.map((obj, idx) => (
             <SchemeWindowDiv key={idx}>
+              <Link to='/user/schemeDetail' style={{textDecoration:'none', color:'black'}}>
               <IndividualSchemeDesign complete details={obj} />
+              </Link>
             </SchemeWindowDiv>
           ))}
         </SchemesGridDiv>

@@ -27,7 +27,7 @@ import { MeetingGroupDetail } from "../Meetings_new/MeetingGroupDetail";
 import { MeetingDetail } from "../Meetings_new/MeetingDetail";
 import { Compliance } from "../Compliance/Compliance";
 import { ComplianceDetail } from "../Compliance/ComplianceDetail";
-
+import {SchemeDetail} from '../Schemes/SchemeDetail';
 function Home() {
   const { loading, error, data } = useQuery(GET_USER_INFO);
   if (loading) return <LoadingComponent />;
@@ -71,6 +71,7 @@ function Home() {
             <Route exact path="/user/meetingGroupDetails/:meetingGroupId" component={MeetingGroupDetail}/>
             <Route exact path="/user/meetingDetail/:meetingId" component={MeetingDetail}/>
             <Route path="/user/compliance" component={Compliance}/>
+            <Route path="/user/schemeDetail" component={SchemeDetail}/>
             <Route exact path="/user/complianceDetail/:doableId" component={ComplianceDetail}/>
           </div>
         </Router>

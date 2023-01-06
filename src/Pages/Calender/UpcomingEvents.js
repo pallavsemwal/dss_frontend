@@ -53,7 +53,7 @@ const Events = ({ details }) => {
   );
 };
 
-export default function UpcomingEvents() {
+export default function UpcomingEvents(props) {
   // const { data } = useQuery(GET_UPCOMING_EVENTS, {
   //   variables: {
   //     curtime: moment().utc().format(),
@@ -61,58 +61,7 @@ export default function UpcomingEvents() {
   //   pollInterval: 60000,
   // });
   
-  const [upcoming, setUpcoming]= useState([]);
-  const [events, setEvents] = useState([]);
-  const [num , setNum]= useState(1);
-  const [page, setPage] = React.useState(1);
-  const [loading, setLoading]= useState(1);
-  const handleChange = (event, value) => {
-    setLoading(1);
-    setPage(value);
-    fetch(getBaseUrl() + "meeting/upcomingMeetings?limit=5&page1="+value, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization":"JWT "+ localStorage.getItem('token')
-      }
-    }).then((data)=>{
-      // console.log(data);
-      // console.log(data.result);
-      return data.json();
-    })
-    .then((data)=>{
-      setLoading(0);
-      setUpcoming(data.content);
-      setNum(data.num_pages);
-      console.log(data);
-    })
-    .catch((err)=>{
-      console.log(err);
-    });
-  };
-  useEffect(() => {
-    // console.log(localStorage);
-    fetch(getBaseUrl() + "meeting/upcomingMeetings?page1=2&limit=5", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization":"JWT "+ localStorage.getItem('token')
-      }
-    }).then((data)=>{
-      // console.log(data);
-      // console.log(data.result);
-      return data.json();
-    })
-    .then((data)=>{
-      setLoading(0);
-      setUpcoming(data.content);
-      setNum(data.num_pages);
-      console.log(data);
-    })
-    .catch((err)=>{
-      console.log(err);
-    }); 
-  },[])
+  
   // Use Effect For Fetch
   // useEffect(() => {
   //   const parsedData = data?.eventsUpcoming?.map((obj, ind) => {
@@ -144,7 +93,7 @@ export default function UpcomingEvents() {
           0 Result Found
         </span>
       )} */}
-      {loading?
+      {props.loading?
       <>
     <Skeleton variant="rectangular" style={{ marginTop:'10px', borderRadius:'5px', width:'100%', height:'110px'}}  />
     <Skeleton variant="rectangular" style={{ marginTop:'10px', borderRadius:'5px', width:'100%', height:'110px'}}  />
@@ -155,19 +104,31 @@ export default function UpcomingEvents() {
     :  
     <></>
     }
-      {upcoming.map((item)=>{
+      {props.upcoming && props.upcoming.map((item)=>{
         // console.log(item.meetingid);
-        if(loading==0){
+        let bgColor='';
+        if(item.priority==1){
+          bgColor='floralwhite';
+      }
+      else if(item.priority==2){
+          bgColor='moccasin';
+      }
+      else if(item.priority==3){
+          bgColor='lightcoral';
+      }
+        if(props.loading==0){
 
-          return (<Link style={{textDecoration:'none', color:'white'}} to={'/user/meetingDetail/'+item.meetingId+"?groupId="+item.groupId}><div style={{background:'#39ccdd',padding:'4px',marginTop:'10px', borderRadius:'5px'}}>
+          return (<Link style={{textDecoration:'none', color:'black'}} to={'/user/meetingDetail/'+item.meetingId+"?groupId="+item.groupId}>
+            <div style={{background:bgColor,padding:'4px',marginTop:'10px', borderRadius:'5px'}}>
           <h4>{item.committeeName} </h4>
           <h5>{item.meetingSubject} </h5>
           <h5>{moment(item.scheduledTime).format("ll")}</h5>
-        </div></Link>);
+        </div>
+        </Link>);
         }
         // committeename: 'testing', meetingsubject: 'Job lagwa do', scheduledtime: '2022-11-04T18:58:14'
       })}
-      <Pagination style={{marginTop:'20px'}} count={num} page={page} onChange={handleChange} />
+      <Pagination style={{marginTop:'20px'}} count={props.num} page={props.page} onChange={props.handleChange} />
     </div>
   );
 }

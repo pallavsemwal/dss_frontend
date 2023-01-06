@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as CS from "../Calender/CalenderStyled";
 import Calender from "../Calender/Calender";
 import moment from "moment-timezone";
@@ -15,6 +15,7 @@ import FilesImage from "../Images/FilesIO.png"
 import LawOrderImage from "../Images/Law.png"
 import MailImage from "../Images/Mails.png"
 import SchemesImage from "../Images/schemes_n.jpg"
+import { getBaseUrl } from "../../utils";
 
 const ActivityGridDiv = styled.div`
   display: flex;
@@ -59,15 +60,67 @@ function ActivityCard({ imgName, name, link }) {
 }
 
 function Integrated() {
+  
   const [curDate, setCurDate] = useState(moment());
   const { loading, error, data } = useQuery(GET_TOP_SCHEMES_FOR_USER);
-
+  const [loadingD, setLoading] = useState(1);
+  const [upcoming, setUpcoming] = useState([]);
+  const [num, setNum] = useState(1);
+  const [page, setPage] = React.useState(1);
+  useEffect(() => {
+    // console.log(localStorage);
+    fetch(getBaseUrl() + "meeting/upcomingMeetings?page1=1&limit=5", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "JWT " + localStorage.getItem('token')
+      }
+    }).then((data) => {
+      // console.log(data);
+      // console.log(data.result);
+      return data.json();
+    })
+      .then((data) => {
+        setLoading(0);
+        setUpcoming(data.content);
+        setNum(data.num_pages);
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
   if (loading) return <LoadingComponent />;
   if (error) {
     console.log(error);
     return <p>Error :(</p>;
   }
   if (data === undefined) return <p>Waiting...</p>;
+  const handleChange = (event, value) => {
+    setLoading(1);
+    setPage(value);
+    fetch(getBaseUrl() + "meeting/upcomingMeetings?limit=5&page1=" + value, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "JWT " + localStorage.getItem('token')
+      }
+    }).then((data) => {
+      // console.log(data);
+      // console.log(data.result);
+      return data.json();
+    })
+      .then((data) => {
+        setLoading(0);
+        setUpcoming(data.content);
+        setNum(data.num_pages);
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  
 
   return (
     <CS.TotalPageDiv>
@@ -110,7 +163,7 @@ function Integrated() {
       <CS.CalenderPane>
         <Calender curDate={curDate} setCurDate={setCurDate} />
         <br />
-        <UpcomingEvents />
+        <UpcomingEvents loading={loadingD} upcoming={upcoming} num={num} page={page} handleChange={handleChange} />
       </CS.CalenderPane>
     </CS.TotalPageDiv>
   );

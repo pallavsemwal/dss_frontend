@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {getBaseUrl} from "../../utils";
-
+import { getBaseUrl } from "../../utils";
+import makeAnimated from 'react-select/animated';
 import Label from "@bootstrap-styled/v4/lib/Label";
 import 'react-phone-number-input/style.css'
 import moment from "moment";
@@ -43,7 +43,9 @@ const Imagel1 = styled.img`
 function Signup() {
   const { register, handleSubmit, reset, watch, errors, control } = useForm();
   const [disList, setDisList] = useState();
-
+  const [depArr, setDepArr] = useState([]);
+  const [relatedDepartments, setRelatedDepartments] = useState([]);
+  const animatedComponents = makeAnimated();
   useEffect(() => {
     fetch(getBaseUrl() + "getDistrictNames/")
       .then((response) => {
@@ -52,16 +54,42 @@ function Signup() {
       .then((data) => {
         setDisList({ data });
       });
+    const a=[
+      {value: 7, label: 'Education'},
+      {value: 9, label: 'Health\n'},
+      {value: 6, label: 'Development'}]
+        setDepArr(a);
+        // console.log(upcoming);
+        // console.log(department);
+    // fetch(getBaseUrl() + "meeting/allDepartment", {
+    //   method: "GET",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     "Authorization": "JWT " + localStorage.getItem('token')
+    //   }
+    // }).then((data) => {
+    //   // console.log(data.json());
+    //   return data.json();
+    // })
+    //   .then((data) => {
+    //     setDepartment(data.departments);
+    //     // console.log(upcoming);
+    //     console.log(department);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
+
     document.body.style.backgroundColor = "#333333";
     return () => (document.body.style.backgroundColor = "#FFF");
   }, []);
 
   const onSubmit = (data) => {
     data['dob'] = data['dob'].split('-').reverse().join('-');
-    data['mobileNumber']= data['mobileNumber'].substring(1);
-    
+    data['mobileNumber'] = data['mobileNumber'].substring(1);
+    data['departments'] = relatedDepartments;
     console.log(data);
-    if(data['mobileNumber'].length!=12){
+    if (data['mobileNumber'].length != 12) {
       alert("please Enter a valid Mobile Number");
       return 0;
     }
@@ -104,7 +132,18 @@ function Signup() {
       });
     })
   };
-
+  const changeRelatedDepartments = (e) => {
+    const v = relatedDepartments;
+    console.log(e);
+    let obj = [];
+    if (e != null) {
+      e.map((item) => {
+        obj.push(item.value);
+      })
+    }
+    console.log(obj);
+    setRelatedDepartments(obj);
+  }
   if (disList === undefined) {
     return <p>Waiting</p>;
   }
@@ -115,190 +154,200 @@ function Signup() {
   });
 
   return (
-    <LogSignPageDiv style={{height: "100%"}}>
-      <BackgroundColourLayer style={{height: "100%"}}>
-      <Row>
-        <Col>
-          <h1 style={{color: "white", marginTop: "150px"}}>Decision Support System</h1>
-          <Imagel1 src={l3}></Imagel1>
-          <h4 style={{color: "white", marginTop: "20px"}}>Already have an account with us? Click on this button to sign in to your account!</h4>
-          <Button href="/login">LogIn</Button>
-        </Col>
-        <Col>
-        <h1 style={{color: "white"}}>Create Your Account!</h1>
-          <LoginSignupBox style={{textAlign: "center"}}>
-            <Form onSubmit={handleSubmit(onSubmit)}>
-              <Row>
-                <Col>
-                  <SpacedLabel>First Name</SpacedLabel> &nbsp;
-                  {errors.first_name && <ErrorSpan>Required</ErrorSpan>} <br />
-                  <Controller
-                    as={<Input />}
-                    name="first_name"
-                    type="text"
-                    control={control}
-                    rules={{ required: true }}
-                  />
-                </Col>
-                <Col>
-                  <SpacedLabel>Last Name</SpacedLabel> &nbsp; <br />
-                  <Controller
-                    as={<Input />}
-                    name="last_name"
-                    type="text"
-                    control={control}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col lg={3}>
-                  <SpacedLabel>Sex</SpacedLabel> &nbsp;
-                  {errors.sex && <ErrorSpan>Required</ErrorSpan>} <br />
-                  <Controller
-                    as={
-                      <Select
-                        options={[
-                          { value: "male", label: "Male" },
-                          { value: "female", label: "Female" },
-                          { value: "other", label: "Other" },
-                        ]}
-                      />
-                    }
-                    name="sex"
-                    type="select"
-                    control={control}
-                    rules={{ required: true }}
-                  />
-                </Col>
-                <Col lg={3}>
-                  <SpacedLabel>DOB</SpacedLabel> &nbsp;
-                  {errors.dob && <ErrorSpan>Required</ErrorSpan>} <br />
-                  <Controller
-                    as={<Input />}
-                    name="dob"
-                    type="date"
-                    max={moment().format("YYYY-MM-DD")}
-                    control={control}
-                    rules={{ required: true }}
-                  />
-                </Col>
-                <Col lg={6}>
-                  <SpacedLabel>Email ID</SpacedLabel> &nbsp;
-                  {errors.email && <ErrorSpan>Required</ErrorSpan>} <br />
-                  <Controller
-                    as={<Input />}
-                    name="email"
-                    type="email"
-                    control={control}
-                    rules={{ required: true }}
-                  />
-                </Col>
-                <Col>
-                  <SpacedLabel>Rank</SpacedLabel> &nbsp; <br />
-                  <Controller
-                    as={<Input />}
-                    name="rank"
-                    type="text"
-                    control={control}
-                    rules={{ required: false }}
-                  />
-                </Col>
-                <Col>
-                  <SpacedLabel>Batch</SpacedLabel> &nbsp; <br />
-                  <Controller
-                    as={<Input />}
-                    name="batch"
-                    type="number"
-                    control={control}
-                    rules={{ required: false }}
-                  />
-                </Col>
-                <Col lg={6}>
-                  <SpacedLabel>District</SpacedLabel> &nbsp;
-                  {errors.district && <ErrorSpan>Required</ErrorSpan>} <br />
-                  <Controller
-                    as={
-                      <Select
-                        options={dist_options}
-                        isMulti={true}
-                      />
-                    }
-                    name="district"
-                    type="select"
-                    control={control}
-                    rules={{ required: true }}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-              <SpacedLabel>Username</SpacedLabel> &nbsp;
-              {errors.username && <ErrorSpan>Enter your username</ErrorSpan>} <br />
-              <Controller
-                as={<Input />}
-                name="username"
-                type="text"
-                control={control}
-                rules={{ required: true }}
-              />
-              </Col>
-              <Col>
-              <SpacedLabel>Password</SpacedLabel> &nbsp;{" "}
-              {errors.password && <ErrorSpan>Enter your password</ErrorSpan>} <br />
-              <Controller
-                as={<Input />}
-                name="password"
-                type="password"
-                control={control}
-                rules={{ required: true }}
-              />
-              </Col>
-              </Row>
-              <div style={
-                {
-                  justifyContent:'space-between',
-                  display:'flex',
-                  paddingLeft:'20px',
-                  alignItems:'center',
-                  marginTop:'20px'
+    <LogSignPageDiv style={{ height: "100%" }}>
+      <BackgroundColourLayer style={{ height: "100%" }}>
+        <Row>
+          <Col>
+            <h1 style={{ color: "white", marginTop: "150px" }}>Decision Support System</h1>
+            <Imagel1 src={l3}></Imagel1>
+            <h4 style={{ color: "white", marginTop: "20px" }}>Already have an account with us? Click on this button to sign in to your account!</h4>
+            <Button href="/login">LogIn</Button>
+          </Col>
+          <Col>
+            <h1 style={{ color: "white" }}>Create Your Account!</h1>
+            <LoginSignupBox style={{ textAlign: "center" }}>
+              <Form onSubmit={handleSubmit(onSubmit)}>
+                <Row>
+                  <Col>
+                    <SpacedLabel>First Name</SpacedLabel> &nbsp;
+                    {errors.first_name && <ErrorSpan>Required</ErrorSpan>} <br />
+                    <Controller
+                      as={<Input />}
+                      name="first_name"
+                      type="text"
+                      control={control}
+                      rules={{ required: true }}
+                    />
+                  </Col>
+                  <Col>
+                    <SpacedLabel>Last Name</SpacedLabel> &nbsp; <br />
+                    <Controller
+                      as={<Input />}
+                      name="last_name"
+                      type="text"
+                      control={control}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col lg={3}>
+                    <SpacedLabel>Sex</SpacedLabel> &nbsp;
+                    {errors.sex && <ErrorSpan>Required</ErrorSpan>} <br />
+                    <Controller
+                      as={
+                        <Select
+                          options={[
+                            { value: "male", label: "Male" },
+                            { value: "female", label: "Female" },
+                            { value: "other", label: "Other" },
+                          ]}
+                        />
+                      }
+                      name="sex"
+                      type="select"
+                      control={control}
+                      rules={{ required: true }}
+                    />
+                  </Col>
+                  <Col lg={3}>
+                    <SpacedLabel>DOB</SpacedLabel> &nbsp;
+                    {errors.dob && <ErrorSpan>Required</ErrorSpan>} <br />
+                    <Controller
+                      as={<Input />}
+                      name="dob"
+                      type="date"
+                      max={moment().format("YYYY-MM-DD")}
+                      control={control}
+                      rules={{ required: true }}
+                    />
+                  </Col>
+                  <Col lg={6}>
+                    <SpacedLabel>Email ID</SpacedLabel> &nbsp;
+                    {errors.email && <ErrorSpan>Required</ErrorSpan>} <br />
+                    <Controller
+                      as={<Input />}
+                      name="email"
+                      type="email"
+                      control={control}
+                      rules={{ required: true }}
+                    />
+                  </Col>
+                  <Col>
+                    <SpacedLabel>Rank</SpacedLabel> &nbsp; <br />
+                    <Controller
+                      as={<Input />}
+                      name="rank"
+                      type="text"
+                      control={control}
+                      rules={{ required: false }}
+                    />
+                  </Col>
+                  <Col>
+                    <SpacedLabel>Batch</SpacedLabel> &nbsp; <br />
+                    <Controller
+                      as={<Input />}
+                      name="batch"
+                      type="number"
+                      control={control}
+                      rules={{ required: false }}
+                    />
+                  </Col>
+                  <Col lg={6}>
+                    <SpacedLabel>District</SpacedLabel> &nbsp;
+                    {errors.district && <ErrorSpan>Required</ErrorSpan>} <br />
+                    <Controller
+                      as={
+                        <Select
+                          options={dist_options}
+                          isMulti={true}
+                        />
+                      }
+                      name="district"
+                      type="select"
+                      control={control}
+                      rules={{ required: true }}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <SpacedLabel>Username</SpacedLabel> &nbsp;
+                    {errors.username && <ErrorSpan>Enter your username</ErrorSpan>} <br />
+                    <Controller
+                      as={<Input />}
+                      name="username"
+                      type="text"
+                      control={control}
+                      rules={{ required: true }}
+                    />
+                  </Col>
+                  <Col>
+                    <SpacedLabel>Password</SpacedLabel> &nbsp;{" "}
+                    {errors.password && <ErrorSpan>Enter your password</ErrorSpan>} <br />
+                    <Controller
+                      as={<Input />}
+                      name="password"
+                      type="password"
+                      control={control}
+                      rules={{ required: true }}
+                    />
+                  </Col>
+                </Row>
+                <div style={
+                  {
+                    justifyContent: 'space-between',
+                    display: 'flex',
+                    paddingLeft: '20px',
+                    alignItems: 'center',
+                    marginTop: '20px'
                   }}>
-              <Label >Mobile Number</Label>
-              <Controller style={{width:'60%'}}
-                as={<PhoneInput   defaultCountry="IN"/>}
-                name="mobileNumber"
-                type="tel"
-                control={control}
-                rules={{ required: true }}
-              />
-              </div>
-              <br />
-              <Controller
-                as={<input style={{ width: "5%" }} />}
-                name="terms"
-                type="checkbox"
-                defaultValue={false}
-                control={control}
-                rules={{ required: true }}
-              />
-              <span style={{color: "white"}}>
-                I agree to the &nbsp;
-                <Terms>
-                  <a href="" onClick={e => e.preventDefault()} style={{color: "white"}}>
-                    Terms of Use & Privacy Statement.
-                  </a>
-                </Terms>
+                  <Label >Mobile Number</Label>
+                  <Controller style={{ width: '60%' }}
+                    as={<PhoneInput defaultCountry="IN" />}
+                    name="mobileNumber"
+                    type="tel"
+                    control={control}
+                    rules={{ required: true }}
+                  />
+                </div>
                 <br />
-                {errors.terms && <ErrorSpan>Tick the checkbox</ErrorSpan>}
-              </span>
-              <br />
-              <br />
-              <StyledButton type="submit">
-                Register
-              </StyledButton>
-            </Form>
-          </LoginSignupBox>
-        </Col>
-      </Row>
+                <Controller
+                  as={<input style={{ width: "5%" }} />}
+                  name="terms"
+                  type="checkbox"
+                  defaultValue={false}
+                  control={control}
+                  rules={{ required: true }}
+                />
+                <span style={{ color: "white" }}>
+                  I agree to the &nbsp;
+                  <Terms>
+                    <a href="" onClick={e => e.preventDefault()} style={{ color: "white" }}>
+                      Terms of Use & Privacy Statement.
+                    </a>
+                  </Terms>
+                  <br />
+                  {errors.terms && <ErrorSpan>Tick the checkbox</ErrorSpan>}
+                </span>
+                <Select
+                  className="mt-2"
+                  name="relatedDepartmentId"
+                  placeholder="Select Related Departments"
+                  closeMenuOnSelect={false}
+                  components={animatedComponents}
+                  isMulti
+                  onChange={changeRelatedDepartments}
+                  options={depArr}
+                />
+                <br />
+                <br />
+                <StyledButton type="submit">
+                  Register
+                </StyledButton>
+              </Form>
+            </LoginSignupBox>
+          </Col>
+        </Row>
       </BackgroundColourLayer>
     </LogSignPageDiv>
   );

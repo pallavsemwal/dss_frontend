@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 .home-container {
   display: grid;
   position: relative;
@@ -8,17 +9,19 @@
 }
 .head{
   border-collapse: collapse;
-  border: 2px solid rgb(200, 200, 200);
+  border: 1px solid white;
   letter-spacing: 1px;
-  font-family: sans-serif;
+  font-family: Roboto,Helvetica Neue,sans-serif;
   font-size: .8rem;
-  width: 100%
+  width: 80%
 }
 .tb{
-  border: 1px solid #F4F4F4;
+  text-align: center;
+  border: 1px solid #d8d8d8;
   color:'black';
-  font-weight: 400;
-  padding: 10px;
+  font-family: Roboto,Helvetica Neue,sans-serif;
+  font-weight: 600;
+  padding: 6px 0px;
 }
 
 .leftPane {

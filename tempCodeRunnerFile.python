@@ -1,0 +1,27 @@
+# Online Python - IDE, Editor, Compiler, Interpreter
+def fetch_usefulness():
+    print("Hello world")
+    marks=[80,0,60,58.33,30,40,15,40,0,0,20,0,10,55,66.67,30,60,70,75,60,5,37.5,60,100]
+    print(len(marks))
+    marks.sort(reverse=True)
+    total=(sum(marks[0:18])/18)
+    print("Total",total)
+    ans=total*15/100
+    print(ans,"ans")
+    
+    minor_paper=0
+    minor_quiz_mcq=1.8 #out of 5
+    minor_quiz_sub=35 #out of 40
+    
+    minor_marks=(minor_paper/80*15+minor_quiz_mcq+(minor_quiz_sub/40*5))
+    print(minor_marks)
+    lab=5
+    pass_=30
+    now=ans+minor_marks+lab
+    remaing=pass_-now
+    print("Remaning to pass",remaing)
+    print(ans+minor_marks+lab)
+    return 0
+    
+
+fetch_usefulness()

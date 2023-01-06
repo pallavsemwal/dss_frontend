@@ -83,7 +83,6 @@ function ToastCalendar({
   const [currNotesModalName, setCurrNotesModalName] = useState("");
   const [PreviousEventData, setPreviousEventData] = useState(null);
   const [showEventModal, setShowEventModal] = useState(false);
-
   const [createTag] = useMutation(CREATE_TAG, {
     onError: (error) => {
       console.log(error);
